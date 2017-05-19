@@ -1,0 +1,13 @@
+{
+    "filters": {
+        "example/conf/server.xml": {
+            "httpPort": "8080",
+            "redirectPort": "8443"
+        },
+        "example/conf/context.xml": {
+            "disableSessionPersist": "true",
+            "sslConnectionPool": "ICAgIDxDb25uZWN0b3IgcG9ydD0iODQ0MyIgcHJvdG9jb2w9Im9yZy5hcGFjaGUuY295b3RlLmh0dHAxMS5IdHRwMTFBcHJQcm90b2NvbCINCiAgICAgICAgICAgICAgIG1heFRocmVhZHM9IjE1MCIgU1NMRW5hYmxlZD0idHJ1ZSIgPg0KICAgICAgICA8VXBncmFkZVByb3RvY29sIGNsYXNzTmFtZT0ib3JnLmFwYWNoZS5jb3lvdGUuaHR0cDIuSHR0cDJQcm90b2NvbCIgLz4NCiAgICAgICAgPFNTTEhvc3RDb25maWc+DQogICAgICAgICAgICA8Q2VydGlmaWNhdGUgY2VydGlmaWNhdGVLZXlGaWxlPSJjb25mL2xvY2FsaG9zdC1yc2Eta2V5LnBlbSINCiAgICAgICAgICAgICAgICAgICAgICAgICBjZXJ0aWZpY2F0ZUZpbGU9ImNvbmYvbG9jYWxob3N0LXJzYS1jZXJ0LnBlbSINCiAgICAgICAgICAgICAgICAgICAgICAgICBjZXJ0aWZpY2F0ZUNoYWluRmlsZT0iY29uZi9sb2NhbGhvc3QtcnNhLWNoYWluLnBlbSINCiAgICAgICAgICAgICAgICAgICAgICAgICB0eXBlPSJSU0EiIC8+DQogICAgICAgIDwvU1NMSG9zdENvbmZpZz4NCiAgICA8L0Nvbm5lY3Rvcj4=",
+            "ajpConnectionPool": "PENvbm5lY3RvciBwb3J0PSI4MDA5IiBwcm90b2NvbD0iQUpQLzEuMyIgcmVkaXJlY3RQb3J0PSI4NDQzIiAvPg=="
+        }
+    }
+}
