@@ -26,6 +26,8 @@ The JSON control file has the format:
     }
 }
 ```
+*Note:* BASE64 is broken, don't use it yet
+
 
 It's possible it could do more than just filter in the future.
 
