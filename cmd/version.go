@@ -26,16 +26,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var ShortVersion bool
+
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Displays version information",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Docker Control Version: %s%s\n", Version, VersionPrerelease)
+		if ShortVersion == true {
+			fmt.Printf("%s%s\n", Version, VersionPrerelease)
+		} else {
+			fmt.Printf("Docker Control Version: %s%s\n", Version, VersionPrerelease)
+		}
 	},
 }
 
 func init() {
 	RootCmd.AddCommand(versionCmd)
+	versionCmd.Flags().BoolVarP(&ShortVersion, "short", "s", false, "Show the version string only")
 }

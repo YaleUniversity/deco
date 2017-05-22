@@ -20,7 +20,7 @@
 
 package main
 
-import "git.yale.edu/cf322/deco/cmd"
+import "git.yale.edu/docker/deco/cmd"
 
 func main() {
 	cmd.Execute()
