@@ -8,16 +8,22 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"path/filepath"
 	"text/template"
 )
 
 // Configuration is the overall data structure unmarshalled from JSON
 type Configuration struct {
 	Filters map[string]map[string]string
+	BaseDir string
 }
 
 // Read reads in the configuration and returns the object
 func (c *Configuration) Read(file string) error {
+	if c.BaseDir != "" {
+		file = filepath.Join(c.BaseDir, file)
+	}
+
 	raw, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Println("[ERROR] unable to read file!", err.Error())
@@ -53,8 +59,8 @@ func (c *Configuration) DoFilters() error {
 func Filter(file string, filters map[string]string) error {
 
 	funcMap := template.FuncMap{
-		"b64dec": base64decode,
-		"b64enc": base64encode,
+		"b64dec": func(v string) string { return base64decode(v) },
+		"b64enc": func(v string) string { return base64encode(v) },
 	}
 
 	blob, err := ioutil.ReadFile(file)
