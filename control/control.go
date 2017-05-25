@@ -20,10 +20,6 @@ type Configuration struct {
 
 // Read reads in the configuration and returns the object
 func (c *Configuration) Read(file string) error {
-	if c.BaseDir != "" {
-		file = filepath.Join(c.BaseDir, file)
-	}
-
 	raw, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Println("[ERROR] unable to read file!", err.Error())
@@ -45,6 +41,10 @@ func (c *Configuration) Print() {
 // DoFilters filters the files listed in the Configuration object
 func (c *Configuration) DoFilters() error {
 	for f, filters := range c.Filters {
+		if c.BaseDir != "" {
+			f = filepath.Join(c.BaseDir, f)
+		}
+
 		fmt.Println("Filtering", f)
 		if err := Filter(f, filters); err != nil {
 			fmt.Println("Error filtering template", err)
