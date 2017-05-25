@@ -1,0 +1,18 @@
+Heres's some stuff you can do:
+
+- Replace some text: {{ .helloWorld }}
+
+- Base64decode some text: {{ .base64String | b64dec }}
+
+{{if .conditionallyDoAThing }}
+- Show some text conditionally
+{{else}}
+- Don't show this text
+{{end}}
+
+{{if .conditionallyDontDoAThing }}
+- Or this text
+{{end}}
+
+- Decode a long base64 encoded base64 encoded string
+{{ .longBase64EncodedString | b64dec }}

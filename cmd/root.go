@@ -31,6 +31,7 @@ import (
 
 var cfgFile string
 var controlFile string
+var baseDir string
 
 // Version is the main version number
 const Version = deco.Version
@@ -43,9 +44,10 @@ var RootCmd = &cobra.Command{
 	Use:   "deco",
 	Short: "Gets stuff ready to run inside docker.",
 	Long: `deco gets your app ready to run when a container
-starts.  For example:  the filters allow you to specify
+starts.  For example: the filters allow you to specify
 individual files to filter and key/value pairs to use when
-filtering.`,
+filtering.  By default, it works from the current directory and
+will filter files in place.`,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -61,6 +63,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVar(&controlFile, "file", "/var/run/secrets/deco.json", "location of control file")
+	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
 }
 
 // initConfig reads in config file and ENV variables if set.

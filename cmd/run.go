@@ -41,6 +41,12 @@ var runCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		// conditional here allows baseDir to be set in the JSON file
+		// and not overriden with ""
+		if baseDir != "" {
+			c.BaseDir = baseDir
+		}
+
 		if err := c.DoFilters(); err != nil {
 			fmt.Println("Filtering failed!", err)
 			os.Exit(2)

@@ -1,10 +1,36 @@
 # deco
 
-`deco` is short for **Docker Environment Control**
+`deco` is short for **D**ocker **E**nvironment **Co**ntrol
 
 ## Usage
 
 `deco` has two options currently, `validate` and `run`.
+
+```
+./deco --help
+deco gets your app ready to run when a container
+starts.  For example: the filters allow you to specify
+individual files to filter and key/value pairs to use when
+filtering.  By default, it works from the current directory and
+will filter files in place.
+
+Usage:
+  deco [command]
+
+Available Commands:
+  help        Help about any command
+  run         Run executes the taks in the given control file
+  validate    Validates the control file
+  version     Displays version information
+
+Flags:
+      --config string   config file (default is $HOME/.deco.yaml)
+  -d, --dir string      Base directory for filtered files/templates
+      --file string     location of control file (default "/var/run/secrets/deco.json")
+  -h, --help            help for deco
+
+Use "deco [command] --help" for more information about a command.
+```
 
 ### Input
 
@@ -26,8 +52,6 @@ The JSON control file has the format:
     }
 }
 ```
-*Note:* BASE64 is broken, don't use it yet
-
 
 It's possible it could do more than just filter in the future.
 
