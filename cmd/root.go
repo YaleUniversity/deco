@@ -61,7 +61,8 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.deco.yaml)")
+	// I don't think we need a config file, but leaving this here for now...
+	//RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVar(&controlFile, "file", "/var/run/secrets/deco.json", "location of control file")
 	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
 }

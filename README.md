@@ -24,7 +24,6 @@ Available Commands:
   version     Displays version information
 
 Flags:
-      --config string   config file (default is $HOME/.deco.yaml)
   -d, --dir string      Base directory for filtered files/templates
       --file string     location of control file (default "/var/run/secrets/deco.json")
   -h, --help            help for deco
