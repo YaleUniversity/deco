@@ -18,9 +18,9 @@ pipeline {
                     cd ${WORKSPACE}
                     go get github.com/golang/lint/golint
                     go get github.com/tebeka/go2xunit
-                    go get git.yale.edu/docker/deco/...
-                    ./bin/golint src/git.yale.edu/docker/deco/.. > lint.txt
-                    go test -v git.yale.edu/docker/deco/... > test.output
+                    go get github.com/YaleUniversity/deco/...
+                    ./bin/golint src/github.com/YaleUniversity/deco/.. > lint.txt
+                    go test -v github.com/YaleUniversity/deco/... > test.output
                     # fails with no tests, re-enable when tests are added
                     # sh 'cat test.output | ./bin/go2xunit -output tests.xml'
                 '''
@@ -33,7 +33,7 @@ pipeline {
         }
         stage('Build'){
             steps {
-                sh 'cd $WORKSPACE && go build -o deco-native -v git.yale.edu/docker/deco'
+                sh 'cd $WORKSPACE && go build -o deco-native -v github.com/YaleUniversity/deco'
                 sh './deco-native version -s > deco.version'
                 sh '''
                     cd ${WORKSPACE}
@@ -44,7 +44,7 @@ pipeline {
                             echo "Building $GOOS-$GOARCH"
                             export GOOS=$GOOS
                             export GOARCH=$GOARCH
-                            go build -o deco-v${VERSION}-$GOOS-$GOARCH git.yale.edu/docker/deco
+                            go build -o deco-v${VERSION}-$GOOS-$GOARCH github.com/YaleUniversity/deco
                         done
                     done
                 '''

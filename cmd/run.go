@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"os"
 
-	"git.yale.edu/docker/deco/control"
+	"github.com/YaleUniversity/deco/control"
 
 	"github.com/spf13/cobra"
 )

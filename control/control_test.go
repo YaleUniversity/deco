@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"git.yale.edu/docker/deco/control"
+	"github.com/YaleUniversity/deco/control"
 )
 
 var testDecoString string = `

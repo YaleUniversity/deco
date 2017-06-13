@@ -7,3 +7,6 @@
 
 # 0.2.1
 * Remove unused `config` option
+
+# 0.2.2
+* Migrate to github.com
