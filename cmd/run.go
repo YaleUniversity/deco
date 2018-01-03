@@ -45,8 +45,8 @@ var runCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		if err := c.Read(controlLocation); err != nil {
-			Logger.Println("Unable to validate control file", err)
+		if err := c.Read(controlLocation, httpHeaders); err != nil {
+			Logger.Println("[ERROR] Unable to validate control file.", err)
 			os.Exit(1)
 		}
 
@@ -57,15 +57,14 @@ var runCmd = &cobra.Command{
 		}
 
 		if err := c.DoFilters(); err != nil {
-			Logger.Println("Filtering failed!", err)
+			Logger.Println("[ERROR] Filtering failed!", err)
 			os.Exit(2)
 		}
 	},
+	TraverseChildren: true,
 }
 
-var Source string
-
 func init() {
-	runCmd.Flags().StringVarP(&Source, "source", "s", "", "Source directory to read from")
+	runCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(runCmd)
 }

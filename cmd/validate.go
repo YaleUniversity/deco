@@ -45,15 +45,16 @@ var validateCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		err := c.Read(controlLocation)
-		if err != nil {
-			Logger.Println("Unable to validate control file", err)
+		if err := c.Read(controlLocation, httpHeaders); err != nil {
+			Logger.Println("[ERROR] Unable to validate control file.", err)
 			os.Exit(1)
 		}
-		Logger.Println("Control file validated successfully")
+		Logger.Println("Control file validated successfully.")
 	},
+	TraverseChildren: true,
 }
 
 func init() {
+	validateCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(validateCmd)
 }

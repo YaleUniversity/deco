@@ -5,6 +5,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,6 +14,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -26,7 +29,7 @@ type Configuration struct {
 }
 
 // Get fetches the control from a location and returns a io.ReadCloser
-func Get(location string) (io.ReadCloser, error) {
+func Get(location string, headers []string) (io.ReadCloser, error) {
 	u, err := url.ParseRequestURI(location)
 	if err == nil {
 		if u.Scheme == "http" || u.Scheme == "https" {
@@ -36,12 +39,27 @@ func Get(location string) (io.ReadCloser, error) {
 				Timeout: time.Second * 10,
 			}
 
-			resp, err := client.Get(location)
+			req, err := http.NewRequest(http.MethodGet, location, nil)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, h := range headers {
+				header := strings.SplitN(h, "=", 2)
+				if len(header) < 2 {
+					e := fmt.Sprintf("Unable to parse HTTP header: %s", h)
+					return nil, errors.New(e)
+				}
+
+				req.Header.Set(header[0], header[1])
+			}
+
+			res, err := client.Do(req)
 			if err != nil {
 				Logger.Println("[ERROR] Unable to get file from URL location", err)
 				return nil, err
 			}
-			return resp.Body, nil
+			return res.Body, nil
 		}
 	}
 
@@ -55,8 +73,8 @@ func Get(location string) (io.ReadCloser, error) {
 }
 
 // Read reads in the configuration and returns the object
-func (c *Configuration) Read(location string) error {
-	r, err := Get(location)
+func (c *Configuration) Read(location string, headers []string) error {
+	r, err := Get(location, headers)
 	if err != nil {
 		return err
 	}

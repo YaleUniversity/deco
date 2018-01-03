@@ -32,6 +32,7 @@ import (
 var cfgFile string
 var baseDir string
 var controlLocation = "/var/run/secrets/deco.json"
+var httpHeaders []string
 
 // Version is the main version number
 const Version = deco.Version

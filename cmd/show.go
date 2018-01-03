@@ -45,23 +45,25 @@ var showCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		r, err := control.Get(controlLocation)
+		r, err := control.Get(controlLocation, httpHeaders)
 		if err != nil {
-			Logger.Println("Unable to show control file", err)
+			Logger.Println("[ERROR] Unable to show control file.", err)
 			os.Exit(1)
 		}
 		defer r.Close()
 
 		raw, err := ioutil.ReadAll(r)
 		if err != nil {
-			Logger.Println("Unable to read control reader", err)
+			Logger.Println("[ERROR] Unable to read control reader.", err)
 			os.Exit(1)
 		}
 
 		fmt.Printf("%s", raw)
 	},
+	TraverseChildren: true,
 }
 
 func init() {
+	showCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(showCmd)
 }
