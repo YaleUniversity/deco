@@ -21,7 +21,7 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"github.com/YaleUniversity/deco/deco"
@@ -30,14 +30,17 @@ import (
 )
 
 var cfgFile string
-var controlFile string
 var baseDir string
+var controlLocation = "/var/run/secrets/deco.json"
 
 // Version is the main version number
 const Version = deco.Version
 
 // VersionPrerelease is a prerelease marker
 const VersionPrerelease = deco.VersionPrerelease
+
+// Logger is a STDERR logger
+var Logger = log.New(os.Stderr, "", 0)
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -54,16 +57,14 @@ will filter files in place.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		Logger.Println(err)
 		os.Exit(-1)
 	}
 }
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	// I don't think we need a config file, but leaving this here for now...
-	//RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.deco.yaml)")
-	RootCmd.PersistentFlags().StringVar(&controlFile, "file", "/var/run/secrets/deco.json", "location of control file")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "deco config file -- _not_ the control file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
 }
 
@@ -75,10 +76,12 @@ func initConfig() {
 
 	viper.SetConfigName(".deco")           // name of config file (without extension)
 	viper.AddConfigPath(os.Getenv("HOME")) // adding home directory as first search path
-	viper.AutomaticEnv()                   // read in environment variables that match
+
+	viper.SetEnvPrefix("deco") // prefix environment variables with DECO_
+	viper.AutomaticEnv()       // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		Logger.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }

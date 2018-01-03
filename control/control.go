@@ -5,12 +5,19 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
+	"os"
 	"path/filepath"
 	"text/template"
+	"time"
 )
+
+// Logger is a STDERR logger
+var Logger = log.New(os.Stderr, "", 0)
 
 // Configuration is the overall data structure unmarshalled from JSON
 type Configuration struct {
@@ -18,24 +25,48 @@ type Configuration struct {
 	BaseDir string
 }
 
-// Read reads in the configuration and returns the object
-func (c *Configuration) Read(file string) error {
-	raw, err := ioutil.ReadFile(file)
+// Get fetches the control from a location and returns a io.ReadCloser
+func Get(location string) (io.ReadCloser, error) {
+	u, err := url.ParseRequestURI(location)
+	if err == nil {
+		if u.Scheme == "http" || u.Scheme == "https" {
+			Logger.Println("[INFO] Fetching control from URL", location)
+
+			var client = &http.Client{
+				Timeout: time.Second * 10,
+			}
+
+			resp, err := client.Get(location)
+			if err != nil {
+				Logger.Println("[ERROR] Unable to get file from URL location", err)
+				return nil, err
+			}
+			return resp.Body, nil
+		}
+	}
+
+	Logger.Println("[INFO] Using control from file", location)
+	r, err := os.Open(location)
 	if err != nil {
-		log.Println("[ERROR] unable to read file!", err.Error())
+		Logger.Println("[ERROR] unable to open control file!", err.Error())
+		return nil, err
+	}
+	return r, nil
+}
+
+// Read reads in the configuration and returns the object
+func (c *Configuration) Read(location string) error {
+	r, err := Get(location)
+	if err != nil {
 		return err
 	}
-
-	if err := json.Unmarshal(raw, c); err != nil {
-		return err
-	}
-
-	return nil
+	defer r.Close()
+	return json.NewDecoder(r).Decode(c)
 }
 
 // Print displays the configuration object
 func (c *Configuration) Print() {
-	fmt.Printf("%+v", c)
+	Logger.Printf("%+v", c)
 }
 
 // DoFilters filters the files listed in the Configuration object
@@ -45,9 +76,9 @@ func (c *Configuration) DoFilters() error {
 			f = filepath.Join(c.BaseDir, f)
 		}
 
-		fmt.Println("Filtering", f)
+		Logger.Println("Filtering", f)
 		if err := Filter(f, filters); err != nil {
-			fmt.Println("Error filtering template", err)
+			Logger.Println("[ERROR] Failed filtering template", err)
 			return err
 		}
 	}
@@ -65,13 +96,13 @@ func Filter(file string, filters map[string]string) error {
 
 	blob, err := ioutil.ReadFile(file)
 	if err != nil {
-		fmt.Println("Unable to read file", err)
+		Logger.Println("[ERROR] Unable to read file", err)
 		return err
 	}
 
 	tmpl, err := template.New("config").Funcs(funcMap).Parse(string(blob))
 	if err != nil {
-		fmt.Println("Unable to parse template file", err)
+		Logger.Println("[ERROR] Unable to parse template file", err)
 		return err
 	}
 
@@ -79,7 +110,7 @@ func Filter(file string, filters map[string]string) error {
 	parsedTemplate := bufio.NewWriter(&b)
 	err = tmpl.Execute(parsedTemplate, filters)
 	if err != nil {
-		fmt.Println("Unable to execute parsed template", err)
+		Logger.Println("[ERROR] Unable to execute parsed template", err)
 		return err
 	}
 	parsedTemplate.Flush()
@@ -95,7 +126,7 @@ func Filter(file string, filters map[string]string) error {
 func base64decode(v string) string {
 	data, err := base64.StdEncoding.DecodeString(v)
 	if err != nil {
-		fmt.Println("Error decoding base64 encoded string", err)
+		Logger.Println("[ERROR] Failed decoding base64 encoded string", err)
 		return err.Error()
 	}
 	return string(data)

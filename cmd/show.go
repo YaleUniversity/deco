@@ -22,17 +22,18 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/YaleUniversity/deco/control"
-
 	"github.com/spf13/cobra"
 )
 
-// validateCmd represents the validate command
-var validateCmd = &cobra.Command{
-	Use:   "validate",
-	Short: "Validates the control file",
+// showCmd represents the show command
+var showCmd = &cobra.Command{
+	Use:   "show",
+	Short: "Reads and displays a control file on STDOUT",
 	Long:  "",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
@@ -44,16 +45,23 @@ var validateCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		var c control.Configuration
-		err := c.Read(controlLocation)
+		r, err := control.Get(controlLocation)
 		if err != nil {
-			Logger.Println("Unable to validate control file", err)
+			Logger.Println("Unable to show control file", err)
 			os.Exit(1)
 		}
-		Logger.Println("Control file validated successfully")
+		defer r.Close()
+
+		raw, err := ioutil.ReadAll(r)
+		if err != nil {
+			Logger.Println("Unable to read control reader", err)
+			os.Exit(1)
+		}
+
+		fmt.Printf("%s", raw)
 	},
 }
 
 func init() {
-	RootCmd.AddCommand(validateCmd)
+	RootCmd.AddCommand(showCmd)
 }

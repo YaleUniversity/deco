@@ -4,10 +4,9 @@
 
 ## Usage
 
-`deco` has two options currently, `validate` and `run`.
+`deco` has three options currently, `validate`, `show`, and `run`.
 
 ```
-./deco --help
 deco gets your app ready to run when a container
 starts.  For example: the filters allow you to specify
 individual files to filter and key/value pairs to use when
@@ -20,12 +19,13 @@ Usage:
 Available Commands:
   help        Help about any command
   run         Run executes the taks in the given control file
+  show        Reads and displays a control file on STDOUT
   validate    Validates the control file
   version     Displays version information
 
 Flags:
+      --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
   -d, --dir string      Base directory for filtered files/templates
-      --file string     location of control file (default "/var/run/secrets/deco.json")
   -h, --help            help for deco
 
 Use "deco [command] --help" for more information about a command.

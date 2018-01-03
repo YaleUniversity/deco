@@ -34,7 +34,7 @@ var versionCmd = &cobra.Command{
 	Short: "Displays version information",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		if shortVersion == true {
+		if shortVersion {
 			fmt.Printf("%s%s\n", Version, VersionPrerelease)
 		} else {
 			fmt.Printf("Docker Control Version: %s%s\n", Version, VersionPrerelease)

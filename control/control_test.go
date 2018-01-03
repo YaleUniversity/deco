@@ -1,8 +1,11 @@
 package control_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -41,7 +44,7 @@ var testDecoStruct = control.Configuration{
 	},
 }
 
-func TestRead(t *testing.T) {
+func TestReadFile(t *testing.T) {
 	testFile := createTemporaryConfigFile()
 	defer os.Remove(testFile.Name())
 
@@ -79,4 +82,31 @@ func createTemporaryConfigFile() *os.File {
 	}
 
 	return tmpfile
+}
+
+func TestReadURL(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, testDecoString)
+	}))
+	defer ts.Close()
+
+	var actual control.Configuration
+	err := actual.Read(ts.URL)
+	if err != nil {
+		t.Errorf("Expected to successfully read for test URL")
+	}
+
+	t.Log("Got control file from test URL:", actual)
+
+	for filterFile, filterMap := range testDecoStruct.Filters {
+		if actualFilterMap := actual.Filters[filterFile]; actualFilterMap != nil {
+			for find, replace := range filterMap {
+				if actualFilterMap[find] != replace {
+					t.Errorf("control.Read(%s) for key '%s', got replacement '%s', expected '%s'", ts.URL, find, actualFilterMap[find], replace)
+				}
+			}
+		} else {
+			t.Errorf("control.Read(%s) returned nil filter map for URL.", ts.URL)
+		}
+	}
 }

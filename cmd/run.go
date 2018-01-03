@@ -21,7 +21,7 @@
 package cmd
 
 import (
-	"fmt"
+	"errors"
 	"os"
 
 	"github.com/YaleUniversity/deco/control"
@@ -34,10 +34,19 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run executes the taks in the given control file",
 	Long:  "",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("accepts only one arg (the control location)")
+		} else if len(args) == 1 {
+			controlLocation = args[0]
+		}
+		// else we are using the default controlLocation
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		if err := c.Read(controlFile); err != nil {
-			fmt.Println("Unable to validate control file", err)
+		if err := c.Read(controlLocation); err != nil {
+			Logger.Println("Unable to validate control file", err)
 			os.Exit(1)
 		}
 
@@ -48,12 +57,15 @@ var runCmd = &cobra.Command{
 		}
 
 		if err := c.DoFilters(); err != nil {
-			fmt.Println("Filtering failed!", err)
+			Logger.Println("Filtering failed!", err)
 			os.Exit(2)
 		}
 	},
 }
 
+var Source string
+
 func init() {
+	runCmd.Flags().StringVarP(&Source, "source", "s", "", "Source directory to read from")
 	RootCmd.AddCommand(runCmd)
 }
