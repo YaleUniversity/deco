@@ -1,8 +1,11 @@
 package control_test
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
@@ -41,13 +44,13 @@ var testDecoStruct = control.Configuration{
 	},
 }
 
-func TestRead(t *testing.T) {
+func TestReadFile(t *testing.T) {
 	testFile := createTemporaryConfigFile()
 	defer os.Remove(testFile.Name())
 
 	filename := testFile.Name()
 	var actual control.Configuration
-	actual.Read(filename)
+	actual.Read(filename, []string{})
 
 	for filterFile, filterMap := range testDecoStruct.Filters {
 		if actualFilterMap := actual.Filters[filterFile]; actualFilterMap != nil {
@@ -79,4 +82,43 @@ func createTemporaryConfigFile() *os.File {
 	}
 
 	return tmpfile
+}
+
+func TestReadURL(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			t.Error("Expected GET Method in request, got", r.Method)
+		}
+
+		if r.Header.Get("foo") != "bar" {
+			t.Error("Expected header foo to be bar, got", r.Header.Get("foo"))
+		}
+
+		if r.Header.Get("biz") != "baz" {
+			t.Error("Expected header biz to be baz, got", r.Header.Get("biz"))
+		}
+
+		fmt.Fprintln(w, testDecoString)
+	}))
+	defer ts.Close()
+
+	var actual control.Configuration
+	err := actual.Read(ts.URL, []string{"foo=bar", "biz=baz"})
+	if err != nil {
+		t.Errorf("Expected to successfully read for test URL")
+	}
+
+	t.Log("Got control file from test URL:", actual)
+
+	for filterFile, filterMap := range testDecoStruct.Filters {
+		if actualFilterMap := actual.Filters[filterFile]; actualFilterMap != nil {
+			for find, replace := range filterMap {
+				if actualFilterMap[find] != replace {
+					t.Errorf("control.Read(%s) for key '%s', got replacement '%s', expected '%s'", ts.URL, find, actualFilterMap[find], replace)
+				}
+			}
+		} else {
+			t.Errorf("control.Read(%s) returned nil filter map for URL.", ts.URL)
+		}
+	}
 }

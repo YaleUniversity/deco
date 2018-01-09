@@ -22,17 +22,18 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/YaleUniversity/deco/control"
-
 	"github.com/spf13/cobra"
 )
 
-// runCmd represents the run command
-var runCmd = &cobra.Command{
-	Use:   "run",
-	Short: "Run executes the taks in the given control file",
+// showCmd represents the show command
+var showCmd = &cobra.Command{
+	Use:   "show",
+	Short: "Reads and displays a control file on STDOUT",
 	Long:  "",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
@@ -44,27 +45,25 @@ var runCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		var c control.Configuration
-		if err := c.Read(controlLocation, httpHeaders); err != nil {
-			Logger.Println("[ERROR] Unable to validate control file.", err)
+		r, err := control.Get(controlLocation, httpHeaders)
+		if err != nil {
+			Logger.Println("[ERROR] Unable to show control file.", err)
+			os.Exit(1)
+		}
+		defer r.Close()
+
+		raw, err := ioutil.ReadAll(r)
+		if err != nil {
+			Logger.Println("[ERROR] Unable to read control reader.", err)
 			os.Exit(1)
 		}
 
-		// conditional here allows baseDir to be set in the JSON file
-		// and not overriden with ""
-		if baseDir != "" {
-			c.BaseDir = baseDir
-		}
-
-		if err := c.DoFilters(); err != nil {
-			Logger.Println("[ERROR] Filtering failed!", err)
-			os.Exit(2)
-		}
+		fmt.Printf("%s", raw)
 	},
 	TraverseChildren: true,
 }
 
 func init() {
-	runCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
-	RootCmd.AddCommand(runCmd)
+	showCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
+	RootCmd.AddCommand(showCmd)
 }

@@ -21,7 +21,7 @@
 package cmd
 
 import (
-	"fmt"
+	"errors"
 	"os"
 
 	"github.com/YaleUniversity/deco/control"
@@ -34,18 +34,27 @@ var validateCmd = &cobra.Command{
 	Use:   "validate",
 	Short: "Validates the control file",
 	Long:  "",
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) > 1 {
+			return errors.New("accepts only one arg (the control location)")
+		} else if len(args) == 1 {
+			controlLocation = args[0]
+		}
+		// else we are using the default controlLocation
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		err := c.Read(controlFile)
-		if err != nil {
-			fmt.Println("Unable to validate control file", err)
+		if err := c.Read(controlLocation, httpHeaders); err != nil {
+			Logger.Println("[ERROR] Unable to validate control file.", err)
 			os.Exit(1)
 		}
-
-		fmt.Println("Control file validated successfully")
+		Logger.Println("Control file validated successfully.")
 	},
+	TraverseChildren: true,
 }
 
 func init() {
+	validateCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(validateCmd)
 }
