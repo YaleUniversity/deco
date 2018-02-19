@@ -1,3 +1,6 @@
+# 0.3.1
+* Add more details to help text
+
 # 0.3.0
 * Add `show` subcommand
 * [BREAKING] stop using `--file controlFile` and instead use the idiomatic arg format: `deco run /path/to/file`
