@@ -55,14 +55,15 @@ The JSON control file has the format:
 It's possible it could do more than just filter in the future.
 
 `deco` can currently source its JSON control file from:
+
 - `/var/run/secrets/deco.json` (default)
 - an arbitrary local filesystem with an absolute or relative path
 - an http(s) endpoint
+- an ssm endpoint
 
 `deco` also supports passing custom headers for doing things like basic auth to the http(s) endpoint
 
 `deco show http://127.0.0.1:8888/v1/deco.json -H 'Authorization=Basic YWRtaW46cGFzc3dvcmQ='`
-
 
 ## Author
 
@@ -72,7 +73,7 @@ E Camden Fisher <camden.fisher@yale.edu>
 
 The MIT License (MIT)
 
-Copyright (c) 2017 Yale University
+Copyright (c) 2020 Yale University
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

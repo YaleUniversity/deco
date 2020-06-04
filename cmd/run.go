@@ -1,4 +1,4 @@
-// Copyright © 2017 Yale University
+// Copyright © 2020 Yale University
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import (
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
-	Use:   "run [http(s)://some.host.name][/]path/to/control.json",
+	Use:   "run [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Run executes the tasks in the given control file",
 	Long: `Run executes the tasks passed in a control file.  Note the control file
 can be a local file or an http/https endpoint and can be absolute or relative.`,

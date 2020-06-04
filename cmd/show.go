@@ -1,4 +1,4 @@
-// Copyright © 2017 Yale University
+// Copyright © 2020 Yale University
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ import (
 
 // showCmd represents the show command
 var showCmd = &cobra.Command{
-	Use:   "show [http(s)://some.host.name][/]path/to/control.json",
+	Use:   "show [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Reads and displays a control file on STDOUT",
 	Long: `Show reads and displays a control file on STDOUT.  Note the control file
 can be a local file or an http/https endpoint and can be absolute or relative.`,
