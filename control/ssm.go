@@ -16,7 +16,7 @@ type SSM struct {
 }
 
 // New creates an SSM from a list of SSMOption functions
-func NewSSM(opts ...SSMOption) (*SSM, error) {
+func NewSSM(opts ...SSMOption) *SSM {
 	Logger.Println("[INFO] creating new ssm provider")
 
 	s := SSM{}
@@ -27,9 +27,8 @@ func NewSSM(opts ...SSMOption) (*SSM, error) {
 	}
 
 	sess := session.Must(session.NewSession(s.config))
-
 	s.Service = ssm.New(sess)
-	return &s, nil
+	return &s
 }
 
 func (s *SSM) GetParameter(path string) (string, error) {

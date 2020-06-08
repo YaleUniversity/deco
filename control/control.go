@@ -64,12 +64,7 @@ func Get(location string, headers []string) (io.ReadCloser, error) {
 
 		if u.Scheme == "ssm" {
 			Logger.Println("[INFO] Fetching control from SSM location", location)
-			svc, err := NewSSM()
-			if err != nil {
-				Logger.Println("[ERROR] Unable to create new SSM client", err)
-				return nil, err
-			}
-
+			svc := NewSSM()
 			res, err := svc.GetParameter(u.RequestURI())
 			if err != nil {
 				Logger.Println("[ERROR] Unable to get file from SSM", err)

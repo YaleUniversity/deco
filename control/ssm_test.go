@@ -38,11 +38,7 @@ func newmockSSMClient(t *testing.T, err error) ssmiface.SSMAPI {
 }
 
 func TestNewSSM(t *testing.T) {
-	s, err := NewSSM()
-	if err != nil {
-		t.Errorf("expected nil error, got %s", err)
-	}
-
+	s := NewSSM()
 	to := reflect.TypeOf(s).String()
 	if to != "*control.SSM" {
 		t.Errorf("expected type to be '*control.SSM', got %s", to)
