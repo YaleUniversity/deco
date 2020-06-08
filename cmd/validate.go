@@ -1,4 +1,4 @@
-// Copyright © 2017 Yale University
+// Copyright © 2020 Yale University
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import (
 
 // validateCmd represents the validate command
 var validateCmd = &cobra.Command{
-	Use:   "validate [http(s)://some.host.name][/]path/to/control.json",
+	Use:   "validate [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Validates the control file",
 	Long: `Validates the control file format.  Note the control file
 can be a local file or an http/https endpoint and can be absolute or relative.`,

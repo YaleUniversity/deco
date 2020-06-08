@@ -61,6 +61,18 @@ func Get(location string, headers []string) (io.ReadCloser, error) {
 			}
 			return res.Body, nil
 		}
+
+		if u.Scheme == "ssm" {
+			Logger.Println("[INFO] Fetching control from SSM location", location)
+			svc := NewSSM()
+			res, err := svc.GetParameter(u.RequestURI())
+			if err != nil {
+				Logger.Println("[ERROR] Unable to get file from SSM", err)
+				return nil, err
+			}
+
+			return ioutil.NopCloser(strings.NewReader(res)), nil
+		}
 	}
 
 	Logger.Println("[INFO] Using control from file", location)

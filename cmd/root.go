@@ -1,4 +1,4 @@
-// Copyright © 2017 Yale University
+// Copyright © 2020 Yale University
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,13 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
-var baseDir string
 var controlLocation = "/var/run/secrets/deco.json"
-var httpHeaders []string
+
+var (
+	cfgFile     string
+	baseDir     string
+	httpHeaders []string
+)
 
 // Version is the main version number
 const Version = deco.Version
@@ -67,6 +70,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "deco config file -- _not_ the control file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
+	RootCmd.PersistentFlags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 }
 
 // initConfig reads in config file and ENV variables if set.
