@@ -35,6 +35,7 @@ var (
 	cfgFile     string
 	baseDir     string
 	httpHeaders []string
+	encoded     bool
 )
 
 // Version is the main version number
@@ -70,7 +71,6 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "deco config file -- _not_ the control file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
-	RootCmd.PersistentFlags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 }
 
 // initConfig reads in config file and ENV variables if set.

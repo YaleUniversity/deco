@@ -85,12 +85,17 @@ func Get(location string, headers []string) (io.ReadCloser, error) {
 }
 
 // Read reads in the configuration and returns the object
-func (c *Configuration) Read(location string, headers []string) error {
+func (c *Configuration) Read(location string, headers []string, encoded bool) error {
 	r, err := Get(location, headers)
 	if err != nil {
 		return err
 	}
 	defer r.Close()
+
+	if encoded {
+		return json.NewDecoder(base64.NewDecoder(base64.StdEncoding, r)).Decode(c)
+	}
+
 	return json.NewDecoder(r).Decode(c)
 }
 

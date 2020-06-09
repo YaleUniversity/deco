@@ -46,7 +46,7 @@ can be a local file or an http/https endpoint and can be absolute or relative.`,
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		if err := c.Read(controlLocation, httpHeaders); err != nil {
+		if err := c.Read(controlLocation, httpHeaders, encoded); err != nil {
 			Logger.Println("[ERROR] Unable to validate control file.", err)
 			os.Exit(1)
 		}
@@ -56,6 +56,7 @@ can be a local file or an http/https endpoint and can be absolute or relative.`,
 }
 
 func init() {
+	validateCmd.Flags().BoolVarP(&encoded, "encoded", "e", false, "Control file is base64 encoded")
 	validateCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(validateCmd)
 }

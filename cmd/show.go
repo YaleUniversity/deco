@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -53,6 +54,10 @@ can be a local file or an http/https endpoint and can be absolute or relative.`,
 		}
 		defer r.Close()
 
+		if encoded {
+			r = ioutil.NopCloser(base64.NewDecoder(base64.StdEncoding, r))
+		}
+
 		raw, err := ioutil.ReadAll(r)
 		if err != nil {
 			Logger.Println("[ERROR] Unable to read control reader.", err)
@@ -65,6 +70,7 @@ can be a local file or an http/https endpoint and can be absolute or relative.`,
 }
 
 func init() {
+	showCmd.Flags().BoolVarP(&encoded, "encoded", "e", false, "Control file is base64 encoded")
 	showCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
 	RootCmd.AddCommand(showCmd)
 }
