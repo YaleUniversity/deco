@@ -1,6 +1,7 @@
 package control_test
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -45,40 +46,53 @@ var testDecoStruct = control.Configuration{
 }
 
 func TestReadFile(t *testing.T) {
-	testFile := createTemporaryConfigFile()
-	defer os.Remove(testFile.Name())
+	for _, e := range []bool{true, false} {
+		testFile := createTemporaryConfigFile(e)
+		defer os.Remove(testFile.Name())
 
-	filename := testFile.Name()
-	var actual control.Configuration
-	actual.Read(filename, []string{})
+		filename := testFile.Name()
+		var actual control.Configuration
+		if err := actual.Read(filename, []string{}, e); err != nil {
+			t.Errorf("failed to read config: %s", err)
+		}
 
-	for filterFile, filterMap := range testDecoStruct.Filters {
-		if actualFilterMap := actual.Filters[filterFile]; actualFilterMap != nil {
-			for find, replace := range filterMap {
-				if actualFilterMap[find] != replace {
-					t.Errorf("control.Read(%s) for key '%s', got replacement '%s', expected '%s'", filename, find, actualFilterMap[find], replace)
+		for filterFile, filterMap := range testDecoStruct.Filters {
+			if actualFilterMap := actual.Filters[filterFile]; actualFilterMap != nil {
+				for find, replace := range filterMap {
+					if actualFilterMap[find] != replace {
+						t.Errorf("control.Read(%s) for key '%s', got replacement '%s', expected '%s'", filename, find, actualFilterMap[find], replace)
+					}
 				}
+			} else {
+				t.Errorf("control.Read(%s) returned nil filter map for file.", filename)
 			}
-		} else {
-			t.Errorf("control.Read(%s) returned nil filter map for file.", filename)
 		}
 	}
 }
 
-func createTemporaryConfigFile() *os.File {
+func createTemporaryConfigFile(encoded bool) *os.File {
 	var tmpfile *os.File
 	content := []byte(testDecoString)
+
 	tmpfile, err := ioutil.TempFile("", "decotest")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if _, err := tmpfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
+	if encoded {
+		encoder := base64.NewEncoder(base64.StdEncoding, tmpfile)
+		encoder.Write(content)
+		if err := encoder.Close(); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		if _, err := tmpfile.Write(content); err != nil {
+			log.Fatal(err)
+		}
 
-	if err := tmpfile.Close(); err != nil {
-		log.Fatal(err)
+		if err := tmpfile.Close(); err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	return tmpfile
@@ -103,7 +117,7 @@ func TestReadURL(t *testing.T) {
 	defer ts.Close()
 
 	var actual control.Configuration
-	err := actual.Read(ts.URL, []string{"foo=bar", "biz=baz"})
+	err := actual.Read(ts.URL, []string{"foo=bar", "biz=baz"}, false)
 	if err != nil {
 		t.Errorf("Expected to successfully read for test URL")
 	}

@@ -9,8 +9,24 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 )
 
+var testDecoString string = `
+{
+    "filters": {
+        "test/file1": {
+            "string1": "value1",
+            "string2": "value2",
+            "string3": "value3"
+        },
+        "test/file2": {
+            "string1": "othervalue1"
+        }
+    }
+}
+`
+
 var testParam = ssm.Parameter{
-	ARN: aws.String("arn:aws:ssm:us-east-1:846761448161:parameter/spinup/testapi/dev/deco.json"),
+	ARN:   aws.String("arn:aws:ssm:us-east-1:846761448161:parameter/spinup/testapi/dev/deco.json"),
+	Value: aws.String(testDecoString),
 }
 
 func (m *mockSSMClient) GetParameter(input *ssm.GetParameterInput) (*ssm.GetParameterOutput, error) {

@@ -18,7 +18,7 @@ Usage:
 
 Available Commands:
   help        Help about any command
-  run         Run executes the taks in the given control file
+  run         Run executes the tasks in the given control file
   show        Reads and displays a control file on STDOUT
   validate    Validates the control file
   version     Displays version information
@@ -34,7 +34,8 @@ Use "deco [command] --help" for more information about a command.
 ### Input
 
 `deco` takes a JSON file as input and defaults to `/var/run/secrets/deco.json`.  This allows it to work
-out of the box in docker swarm with swarm secrets.
+out of the box in docker swarm with swarm secrets.  The control file can be base64 encoded (standard encoding)
+using the `--encoded` flag
 
 The JSON control file has the format:
 
