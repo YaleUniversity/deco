@@ -6,7 +6,7 @@
 
 `deco` has three options currently, `validate`, `show`, and `run`.
 
-```
+```text
 deco gets your app ready to run when a container
 starts.  For example: the filters allow you to specify
 individual files to filter and key/value pairs to use when

@@ -1,6 +1,8 @@
 package control
 
 import (
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ssm"
@@ -19,8 +21,15 @@ type SSM struct {
 func NewSSM(opts ...SSMOption) *SSM {
 	Logger.Println("[INFO] creating new ssm provider")
 
+	region := "us-east-1"
+	if r, ok := os.LookupEnv("AWS_REGION"); ok {
+		region = r
+	} else if r, ok := os.LookupEnv("AWS_DEFAULT_REGION"); ok {
+		region = r
+	}
+
 	s := SSM{}
-	s.config = aws.NewConfig()
+	s.config = aws.NewConfig().WithRegion(region)
 
 	for _, opt := range opts {
 		opt(&s)
