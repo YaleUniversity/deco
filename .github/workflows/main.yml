@@ -8,12 +8,18 @@ jobs:
   releases-matrix:
     name: Release Go Binary
     runs-on: ubuntu-latest
+    env:
+      CGO_ENABLED: 0
     strategy:
       matrix:
         # build and publish in parallel: linux/amd64, windows/amd64, darwin/amd64
         goos: [linux, windows, darwin]
         goarch: [amd64]
     steps:
+    - name: Set APP_VERSION env
+      run: echo ::set-env name=APP_VERSION::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )
+    - name: Set BUILD_TIME env
+      run: echo ::set-env name=BUILD_TIME::$(date)
     - uses: actions/checkout@v2
     - uses: wangyoucao577/go-release-action@master
       with:
