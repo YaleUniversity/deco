@@ -66,6 +66,58 @@ It's possible it could do more than just filter in the future.
 
 `deco show http://127.0.0.1:8888/v1/deco.json -H 'Authorization=Basic YWRtaW46cGFzc3dvcmQ='`
 
+## Example
+
+```
+deco run /tmp/params.json -d /tmp
+[INFO] Using control from file /tmp/params.json
+Filtering /tmp/configdir/configfile.json
+```
+
+^^ /tmp/params.json is the control file.  It contains filters and configuration data inside the filter key:
+  - A filter key itself is the relative path to the config file template 
+  - The filter value contains the data to replace within the template
+
+The JSON control file has the format:
+
+```JSON
+{
+    "filters": {
+        "configdir/configfile.json": {
+            "bar": "bar-app",
+            "host01": "host01.example.org"
+            "path01": "/tmp"
+            "baz": "baz-app"
+            "host02": "host02.example.org"
+            "path02": "/u0/app"
+            "log_level": "/debug"
+        }
+    }
+}
+```
+
+file template:
+
+In our example it exists as /tmp/configdir/configfile.json.  It will be written over in-place.
+
+cat configdir/configfile.json
+
+```JSON
+{
+  "foo": {
+    "{{ .bar }}": {
+      "host": "{{ .host01 }}",
+      "path": "{{ .path01 }}"
+    },
+    "{{ .baz }}": {
+      "host": "{{ .host02 }}",
+      "path": "{{ .path02 }}"
+    }
+  },
+  "log_level": "{{ .log_level }}"
+}
+```
+
 ## Author
 
 E Camden Fisher <camden.fisher@yale.edu>
