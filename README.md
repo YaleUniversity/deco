@@ -96,7 +96,7 @@ The JSON control file has the format:
 }
 ```
 
-file template:
+### file template:
 
 In our example it exists as /tmp/configdir/configfile.json.  It will be written over in-place.
 
@@ -115,6 +115,25 @@ cat configdir/configfile.json
     }
   },
   "log_level": "{{ .log_level }}"
+}
+```
+
+result:
+
+```
+$ cat /tmp/configdir/configfile.json                                        
+{ 
+  "foo": {
+    "bar-app": {
+      "host": "host01.example.org",
+      "path": "/tmp"
+    },
+    "baz-app": {
+      "host": "host02.example.org",
+      "path": "/u0/app"
+    }
+  },
+  "log_level": "debug"
 }
 ```
 
