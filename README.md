@@ -81,7 +81,7 @@ Filtering /app/configdir/configfile.json
 **Note:** /app/params.json is the control file.  It contains filters and configuration data inside the filter key:
   - A filter key itself is the relative or full path to the template config file
   - The filter value contains the data to replace within the template
-  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir above the project, you don't have to specify -d.
+  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir above the configdir, you don't have to specify -d.
 
 #### Control file:
 
@@ -103,7 +103,7 @@ Filtering /app/configdir/configfile.json
 
 #### File template:
 
-In our example it exists as /app/configdir/configfile.json.  It will be written over in-place.
+In our example the template exists as /app/configdir/configfile.json.  It will be written over in-place.
 
 /bin/cp /app/configdir/configfile.json.orig /app/configdir/configfile.json
 
