@@ -147,6 +147,7 @@ $ cat /app/configdir/configfile.json
 
 ### Case #2 - use AWS SSM parameter store to get control file
 
+```
 if [ -n "$SSMPATH" ]; then
   echo "Getting config file from SSM Parameter Store (${SSMPATH}) ..."
   deco version
@@ -160,6 +161,7 @@ else
   echo "ERROR: SSMPATH variable not set!"
   exit 1
 fi
+```
 
 ## Author
 
