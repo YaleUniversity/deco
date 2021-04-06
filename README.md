@@ -68,7 +68,7 @@ It's possible it could do more than just filter in the future.
 
 ## Examples
 
-**Note:** the examples directory has working cases with base64 encoding/decoding.
+**Note:** the examples directory has several working cases, including base64 encoding/decoding.
 
 ### Case #1 - basic usage with local filesystem
 
@@ -147,7 +147,7 @@ $ cat /app/configdir/configfile.json
 
 ### Case #2 - use AWS SSM parameter store to get control file
 
-```
+```bash
 if [ -n "$SSMPATH" ]; then
   echo "Getting config file from SSM Parameter Store (${SSMPATH}) ..."
   deco version
