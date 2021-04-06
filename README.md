@@ -60,11 +60,108 @@ It's possible it could do more than just filter in the future.
 - `/var/run/secrets/deco.json` (default)
 - an arbitrary local filesystem with an absolute or relative path
 - an http(s) endpoint
-- an ssm endpoint
+- an ssm parameter store endpoint
 
 `deco` also supports passing custom headers for doing things like basic auth to the http(s) endpoint
 
 `deco show http://127.0.0.1:8888/v1/deco.json -H 'Authorization=Basic YWRtaW46cGFzc3dvcmQ='`
+
+## Examples
+
+**Note:** the examples directory has several working cases, including base64 encoding/decoding.
+
+### Case #1 - basic usage with local filesystem
+
+```
+deco run /app/params.json -d /app
+[INFO] Using control from file /app/params.json
+Filtering /app/configdir/configfile.json
+```
+
+**Note:** /app/params.json is the control file.  It contains filters and configuration data inside the filter key:
+  - A filter key itself is the relative or full path to the template config file
+  - The filter value contains the data to replace within the template
+  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir above the project, you don't have to specify -d.
+
+#### Control file:
+
+```JSON
+{
+    "filters": {
+        "configdir/configfile.json": {
+            "bar": "bar-app",
+            "host01": "host01.example.org",
+            "path01": "/tmp",
+            "baz": "baz-app",
+            "host02": "host02.example.org",
+            "path02": "/u0/app",
+            "log_level": "/debug"
+        }
+    }
+}
+```
+
+#### File template:
+
+In our example it exists as /app/configdir/configfile.json.  It will be written over in-place.
+
+/bin/cp /app/configdir/configfile.json.orig /app/configdir/configfile.json
+
+cat /app/configdir/configfile.json
+
+```JSON
+{
+  "foo": {
+    "{{ .bar }}": {
+      "host": "{{ .host01 }}",
+      "path": "{{ .path01 }}"
+    },
+    "{{ .baz }}": {
+      "host": "{{ .host02 }}",
+      "path": "{{ .path02 }}"
+    }
+  },
+  "log_level": "{{ .log_level }}"
+}
+```
+
+result:
+
+$ cat /app/configdir/configfile.json                                        
+
+```JSON
+{ 
+  "foo": {
+    "bar-app": {
+      "host": "host01.example.org",
+      "path": "/tmp"
+    },
+    "baz-app": {
+      "host": "host02.example.org",
+      "path": "/u0/app"
+    }
+  },
+  "log_level": "debug"
+}
+```
+
+### Case #2 - use AWS SSM parameter store to get control file
+
+```bash
+if [ -n "$SSMPATH" ]; then
+  echo "Getting config file from SSM Parameter Store (${SSMPATH}) ..."
+  deco version
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR: deco not found!"
+    exit 1
+  fi
+  deco validate -e ssm://${SSMPATH} || exit 1
+  deco run -e ssm://${SSMPATH}
+else
+  echo "ERROR: SSMPATH variable not set!"
+  exit 1
+fi
+```
 
 ## Author
 
@@ -74,7 +171,7 @@ E Camden Fisher <camden.fisher@yale.edu>
 
 The MIT License (MIT)
 
-Copyright (c) 2020 Yale University
+Copyright (c) 2021 Yale University
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
