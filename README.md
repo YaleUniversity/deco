@@ -127,8 +127,9 @@ cat /app/configdir/configfile.json
 
 result:
 
-```
 $ cat /app/configdir/configfile.json                                        
+
+```JSON
 { 
   "foo": {
     "bar-app": {
