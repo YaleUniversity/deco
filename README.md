@@ -60,25 +60,30 @@ It's possible it could do more than just filter in the future.
 - `/var/run/secrets/deco.json` (default)
 - an arbitrary local filesystem with an absolute or relative path
 - an http(s) endpoint
-- an ssm endpoint
+- an ssm parameter store endpoint
 
 `deco` also supports passing custom headers for doing things like basic auth to the http(s) endpoint
 
 `deco show http://127.0.0.1:8888/v1/deco.json -H 'Authorization=Basic YWRtaW46cGFzc3dvcmQ='`
 
-## Example
+## Examples
+
+### Case #1 - basic usage with local filesystem
+
+**Note:** the examples directory has working cases with base64 encoding/decoding.
 
 ```
-deco run /tmp/params.json -d /tmp
-[INFO] Using control from file /tmp/params.json
-Filtering /tmp/configdir/configfile.json
+deco run /app/params.json -d /app
+[INFO] Using control from file /app/params.json
+Filtering /app/configdir/configfile.json
 ```
 
-^^ /tmp/params.json is the control file.  It contains filters and configuration data inside the filter key:
-  - A filter key itself is the relative path to the config file template 
+**Note:** /app/params.json is the control file.  It contains filters and configuration data inside the filter key:
+  - A filter key itself is the relative or full path to the template config file
   - The filter value contains the data to replace within the template
+  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir of the template, you don't have to specify -d.
 
-### control file:
+#### Control file:
 
 ```JSON
 {
@@ -96,11 +101,13 @@ Filtering /tmp/configdir/configfile.json
 }
 ```
 
-### file template:
+#### File template:
 
-In our example it exists as /tmp/configdir/configfile.json.  It will be written over in-place.
+In our example it exists as /app/configdir/configfile.json.  It will be written over in-place.
 
-cat configdir/configfile.json
+/bin/cp /app/configdir/configfile.json.orig /app/configdir/configfile.json
+
+cat /app/configdir/configfile.json
 
 ```JSON
 {
@@ -121,7 +128,7 @@ cat configdir/configfile.json
 result:
 
 ```
-$ cat /tmp/configdir/configfile.json                                        
+$ cat /app/configdir/configfile.json                                        
 { 
   "foo": {
     "bar-app": {
@@ -136,6 +143,22 @@ $ cat /tmp/configdir/configfile.json
   "log_level": "debug"
 }
 ```
+
+### Case #2 - use AWS SSM parameter store to get control file
+
+if [ -n "$SSMPATH" ]; then
+  echo "Getting config file from SSM Parameter Store (${SSMPATH}) ..."
+  deco version
+  if [[ $? -ne 0 ]]; then
+    echo "ERROR: deco not found!"
+    exit 1
+  fi
+  deco validate -e ssm://${SSMPATH} || exit 1
+  deco run -e ssm://${SSMPATH}
+else
+  echo "ERROR: SSMPATH variable not set!"
+  exit 1
+fi
 
 ## Author
 
