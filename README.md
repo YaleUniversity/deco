@@ -68,9 +68,9 @@ It's possible it could do more than just filter in the future.
 
 ## Examples
 
-### Case #1 - basic usage with local filesystem
-
 **Note:** the examples directory has working cases with base64 encoding/decoding.
+
+### Case #1 - basic usage with local filesystem
 
 ```
 deco run /app/params.json -d /app
@@ -81,7 +81,7 @@ Filtering /app/configdir/configfile.json
 **Note:** /app/params.json is the control file.  It contains filters and configuration data inside the filter key:
   - A filter key itself is the relative or full path to the template config file
   - The filter value contains the data to replace within the template
-  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir of the template, you don't have to specify -d.
+  - -d is an optional basedir.  If you specify full path to the template in the control file, you don't have to specify -d.  If you change dir - _cd_ - to the parent dir above the project, you don't have to specify -d.
 
 #### Control file:
 
