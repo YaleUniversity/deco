@@ -29,13 +29,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-var controlLocation = "/var/run/secrets/deco.json"
-
 var (
-	cfgFile     string
-	baseDir     string
-	httpHeaders []string
-	encoded     bool
+	controlLocation = "/var/run/secrets/deco.json"
+	cfgFile         string
+	baseDir         string
+	httpHeaders     []string
+	encoded         bool
 )
 
 // Version is the main version number

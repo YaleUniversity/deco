@@ -36,7 +36,8 @@ var showCmd = &cobra.Command{
 	Use:   "show [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Reads and displays a control file on STDOUT",
 	Long: `Show reads and displays a control file on STDOUT.  Note the control file
-can be a local file or an http/https endpoint and can be absolute or relative.`,
+can be a local file or an http/https endpoint and can be absolute or relative. If no
+control file is specified, the default '/var/run/secrets/deco.json' is assumed.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
 			return errors.New("accepts only one arg (the control location)")
