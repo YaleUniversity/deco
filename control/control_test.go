@@ -39,7 +39,7 @@ var file2 = map[string]string{
 }
 
 var testDecoStruct = control.Configuration{
-	Filters: map[string]map[string]string{
+	Filters: map[string]control.Filter{
 		"test/file1": file1,
 		"test/file2": file2,
 	},

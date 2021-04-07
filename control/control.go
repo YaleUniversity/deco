@@ -22,9 +22,11 @@ import (
 // Logger is a STDERR logger
 var Logger = log.New(os.Stderr, "", 0)
 
+type Filter map[string]string
+
 // Configuration is the overall data structure unmarshalled from JSON
 type Configuration struct {
-	Filters map[string]map[string]string
+	Filters map[string]Filter
 	BaseDir string
 }
 
@@ -112,7 +114,7 @@ func (c *Configuration) DoFilters() error {
 		}
 
 		Logger.Println("Filtering", f)
-		if err := Filter(f, filters); err != nil {
+		if err := ExecFilter(f, filters); err != nil {
 			Logger.Println("[ERROR] Failed filtering template", err)
 			return err
 		}
@@ -121,8 +123,8 @@ func (c *Configuration) DoFilters() error {
 	return nil
 }
 
-// Filter filters an individual file
-func Filter(file string, filters map[string]string) error {
+// ExecFilter filters an individual file
+func ExecFilter(file string, filters map[string]string) error {
 
 	funcMap := template.FuncMap{
 		"b64dec": func(v string) string { return base64decode(v) },

@@ -34,7 +34,8 @@ var validateCmd = &cobra.Command{
 	Use:   "validate [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Validates the control file",
 	Long: `Validates the control file format.  Note the control file
-can be a local file or an http/https endpoint and can be absolute or relative.`,
+can be a local file or an http/https endpoint and can be absolute or relative. If no
+control file is specified, the default '/var/run/secrets/deco.json' is assumed.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
 			return errors.New("accepts only one arg (the control location)")

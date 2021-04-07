@@ -34,7 +34,8 @@ var runCmd = &cobra.Command{
 	Use:   "run [http(s)][ssm]://[some.host.name][/]path/to/control.json",
 	Short: "Run executes the tasks in the given control file",
 	Long: `Run executes the tasks passed in a control file.  Note the control file
-can be a local file or an http/https endpoint and can be absolute or relative.`,
+can be a local file or an http/https endpoint and can be absolute or relative.  If no
+control file is specified, the default '/var/run/secrets/deco.json' is assumed.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 1 {
 			return errors.New("accepts only one arg (the control location)")
