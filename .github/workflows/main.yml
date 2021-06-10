@@ -20,7 +20,7 @@ jobs:
 
     - name: Set APP_VERSION env
       run: |
-        echo "APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )" >> $GITHUB_E
+        echo "APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )" >> $GITHUB_ENV
 
     - name: Set BUILD_TIME env
       run: |
