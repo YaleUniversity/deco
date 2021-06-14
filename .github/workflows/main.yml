@@ -16,12 +16,18 @@ jobs:
         goos: [linux, windows, darwin]
         goarch: [amd64]
     steps:
-    - name: Set APP_VERSION env
-      run: echo ::set-env name=APP_VERSION::$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )
-    - name: Set BUILD_TIME env
-      run: echo ::set-env name=BUILD_TIME::$(date)
     - uses: actions/checkout@v2
+
+    - name: Set APP_VERSION env
+      run: |
+        echo "APP_VERSION=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev )" >> $GITHUB_ENV
+
+    - name: Set BUILD_TIME env
+      run: |
+        echo "BUILD_TIME=$(date)" >> $GITHUB_ENV
+
     - uses: wangyoucao577/go-release-action@master
+      name: run the build
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         goos: ${{ matrix.goos }}
