@@ -2,10 +2,10 @@
     "listenAddress": ":8080",
     "account": {
         "region": "us-east-1",
-        "akid": "{{ .akid }}",
-        "secret": "{{ .secret }}"
+        "akid": "{{ .akid | decrypt }}",
+        "secret": "{{ .secret | decrypt }}"
     },
-    "token": "{{ .apiToken }}",
+    "token": "{{ .apiToken | decrypt }}",
     "logLevel": "info",
     "org": "{{ .org }}"
 }
