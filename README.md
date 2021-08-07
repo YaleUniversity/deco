@@ -17,6 +17,7 @@ Usage:
   deco [command]
 
 Available Commands:
+  encryption  Manage encryption
   help        Help about any command
   run         Run executes the tasks in the given control file
   show        Reads and displays a control file on STDOUT
@@ -27,6 +28,7 @@ Flags:
       --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
   -d, --dir string      Base directory for filtered files/templates
   -h, --help            help for deco
+      --key string      256bit encryption key
 
 Use "deco [command] --help" for more information about a command.
 ```
@@ -144,13 +146,11 @@ These can be used by piping the value through the functions.  ie.
 {{ .foobarVariableToDecrypt | decrypt }}
 ```
 
-**Note:** `decrypt` expects the `DECO_ENCRYPTION_KEY` environment variable to be set.
-
-The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
-
 ## Encryption
 
-Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  It's not currently supported to pass the key to deco on the command line during the `validate` or `run` steps as we hope these will be provided to the environment at runtime through some secrets manager.  This may be added in the future for completeness.
+Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  The key can be passed to deco on the command line using the `--key` flag or by setting the `DECO_ENCRYPTION_KEY` environment variable.  During the `validate`, `show` and `run` steps, we recommend providing this value to the environment at runtime through a secrets manager.
+
+The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
 
 The `encryption` subcommand provides management facilities to generate new encryption keys, decrypt values and encrypt values.
 
@@ -166,12 +166,12 @@ Available Commands:
   genkey      Generate a new encryption key
 
 Flags:
-  -h, --help         help for encryption
-      --key string   256bit encryption key
+  -h, --help   help for encryption
 
 Global Flags:
       --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
   -d, --dir string      Base directory for filtered files/templates
+      --key string      256bit encryption key
 
 Use "deco encryption [command] --help" for more information about a command.
 ```

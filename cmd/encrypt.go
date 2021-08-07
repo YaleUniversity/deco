@@ -4,36 +4,22 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/YaleUniversity/deco/control"
 	"github.com/spf13/cobra"
 )
 
-var (
-	encryptionKey string
-)
-
 func init() {
 	RootCmd.AddCommand(encryptionCmd)
-	encryptionCmd.PersistentFlags().StringVar(&encryptionKey, "key", "", "256bit encryption key")
 	encryptionCmd.AddCommand(encryptionGenKey)
 	encryptionCmd.AddCommand(encryptValue)
 	encryptionCmd.AddCommand(decryptValue)
 }
 
-// encryptionCmd represents the show command
 var encryptionCmd = &cobra.Command{
 	Use:   "encryption",
 	Short: "Manage encryption",
 	Long:  `Manage encryption mechanisms for deco values.`,
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		if value := os.Getenv("DECO_ENCRYPTION_KEY"); encryptionKey == "" && value != "" {
-			encryptionKey = value
-		}
-
-		return nil
-	},
 }
 
 var encryptionGenKey = &cobra.Command{

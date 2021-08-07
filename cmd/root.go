@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -34,6 +35,7 @@ var (
 	baseDir         string
 	httpHeaders     []string
 	encoded         bool
+	encryptionKey   string
 )
 
 // Logger is a STDERR logger
@@ -48,6 +50,18 @@ starts.  For example: the filters allow you to specify
 individual files to filter and key/value pairs to use when
 filtering.  By default, it works from the current directory and
 will filter files in place.`,
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		// if the encryption key is passed as a flag, set the environment variable for the current
+		// process.  otherwise, if the environment variable is set, use that value for the encryptionKey
+		if encryptionKey != "" {
+			if err := os.Setenv("DECO_ENCRYPTION_KEY", encryptionKey); err != nil {
+				return fmt.Errorf("failed to set DECO_ENCRYPTION_KEY environment: %s", err)
+			}
+		} else if value := os.Getenv("DECO_ENCRYPTION_KEY"); value != "" {
+			encryptionKey = value
+		}
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -63,6 +77,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "deco config file -- _not_ the control file (default is $HOME/.deco.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&baseDir, "dir", "d", "", "Base directory for filtered files/templates")
+	RootCmd.PersistentFlags().StringVar(&encryptionKey, "key", "", "256bit encryption key")
 }
 
 // initConfig reads in config file and ENV variables if set.
