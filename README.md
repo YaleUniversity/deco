@@ -124,6 +124,30 @@ else
 fi
 ```
 
+## Templates
+
+Templates are the file paths referenced as the key for the `filters` object in the control file.  They should exist in place as templates before deco is run.  They use [standard Go template expansion](https://pkg.go.dev/text/template).
+
+Deco also supports a few custom functions in the template file:
+
+|         |                         |
+| ------- | ----------------------- |
+| b64enc  | base64 encode the value |
+| b64dec  | base64 decode the value |
+| decrypt | decrypt the value       |
+
+These can be used by piping the value through the functions.  ie.
+
+```golang
+{{ .foobarVariableToEncode | b64enc }}
+{{ .foobarVariableToDecode | b64dec }}
+{{ .foobarVariableToDecrypt | decrypt }}
+```
+
+**Note:** `decrypt` expects the `DECO_ENCRYPTION_KEY` environment variable to be set.
+
+The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
+
 ## Author
 
 E Camden Fisher <camden.fisher@yale.edu>
