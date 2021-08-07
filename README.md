@@ -148,7 +148,7 @@ These can be used by piping the value through the functions.  ie.
 
 ## Encryption
 
-Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  The key can be passed to deco on the command line using the `--key` flag or by setting the `DECO_ENCRYPTION_KEY` environment variable.  During the `validate`, `show` and `run` steps, we recommend providing this value to the environment at runtime through a secrets manager.
+Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  The key can be passed to deco on the command line using the `--key` flag or by setting the `DECO_ENCRYPTION_KEY` environment variable.  During the `validate`, `show` and `run` steps, we recommend providing the key to the environment at runtime through a secrets manager.
 
 The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
 
