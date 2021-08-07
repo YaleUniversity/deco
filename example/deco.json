@@ -14,6 +14,12 @@
         },
         "example/conf/context.xml": {
             "disableSessionPersist": "true"
+        },
+        "example/conf/config.json": {
+            "org": "awesomesauce",
+            "akid": "10bb7974f5393d278ca8acbc9918db5d48e93fe21b49ae51a156816cdeb76a9ca4d9088ccdecd11c89b00d72d964cb32018f23e6cf67ff69",
+            "secret": "72c66ea6ebff822d57f363ef945d742dffef69b8ddbcc0d9de0d164370515e8c4d854f1647134256acd7d9efeb849507607b38d9459a969b36ea1c7a5f70",
+            "apiToken": "c2eacb97755d75216af0db63a73712b8caab1a504f3326ce60fef0016a7388420d4f64e94c2facd91c3e688610b48e1277d6c41b9134336b39fc0e093a6beb00"
         }
     }
 }
