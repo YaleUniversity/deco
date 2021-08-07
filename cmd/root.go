@@ -24,7 +24,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/YaleUniversity/deco/deco"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -36,12 +35,6 @@ var (
 	httpHeaders     []string
 	encoded         bool
 )
-
-// Version is the main version number
-const Version = deco.Version
-
-// VersionPrerelease is a prerelease marker
-const VersionPrerelease = deco.VersionPrerelease
 
 // Logger is a STDERR logger
 var Logger = log.New(os.Stderr, "", 0)
