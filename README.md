@@ -148,6 +148,34 @@ These can be used by piping the value through the functions.  ie.
 
 The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
 
+## Encryption
+
+Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  It's not currently supported to pass the key to deco on the command line during the `validate` or `run` steps as we hope these will be provided to the environment at runtime through some secrets manager.  This may be added in the future for completeness.
+
+The `encryption` subcommand provides management facilities to generate new encryption keys, decrypt values and encrypt values.
+
+```text
+Manage encryption mechanisms for deco values.
+
+Usage:
+  deco encryption [command]
+
+Available Commands:
+  decrypt     Decrypt a value
+  encrypt     Encrypt a value
+  genkey      Generate a new encryption key
+
+Flags:
+  -h, --help         help for encryption
+      --key string   256bit encryption key
+
+Global Flags:
+      --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
+  -d, --dir string      Base directory for filtered files/templates
+
+Use "deco encryption [command] --help" for more information about a command.
+```
+
 ## Author
 
 E Camden Fisher <camden.fisher@yale.edu>
