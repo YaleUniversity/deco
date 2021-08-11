@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -127,8 +128,9 @@ func (c *Configuration) DoFilters() error {
 func ExecFilter(file string, filters map[string]string) error {
 
 	funcMap := template.FuncMap{
-		"b64dec": func(v string) string { return base64decode(v) },
-		"b64enc": func(v string) string { return base64encode(v) },
+		"b64dec":  func(v string) string { return base64decode(v) },
+		"b64enc":  func(v string) string { return base64encode(v) },
+		"decrypt": func(v string) string { return decrypt(v) },
 	}
 
 	blob, err := ioutil.ReadFile(file)
@@ -172,4 +174,35 @@ func base64decode(v string) string {
 // base64encode base64 encodes a string
 func base64encode(v string) string {
 	return base64.StdEncoding.EncodeToString([]byte(v))
+}
+
+func decrypt(v string) string {
+	encryptionKey := os.Getenv("DECO_ENCRYPTION_KEY")
+	if encryptionKey == "" {
+		Logger.Println("[ERROR] Failed decrypt string, missing DECO_ENCRYPTION_KEY")
+		return v
+	}
+
+	keyBytes, err := hex.DecodeString(encryptionKey)
+	if err != nil {
+		Logger.Println("[ERROR] Failed decrypt string, invalid key encoding", err)
+		return v
+	}
+
+	var key [32]byte
+	copy(key[:], keyBytes)
+
+	cipherBytes, err := hex.DecodeString(v)
+	if err != nil {
+		Logger.Println("[ERROR] Failed decrypt string, invalid ciphertext encoding", err)
+		return v
+	}
+
+	plainText, err := Decrypt(cipherBytes, &key)
+	if err != nil {
+		Logger.Println("[ERROR] Failed decrypt string", err)
+		return v
+	}
+
+	return string(plainText)
 }
