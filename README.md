@@ -2,7 +2,7 @@
 
 `deco` is short for **D**ocker **E**nvironment **Co**ntrol
 
-## Usage
+## Command Usage
 
 `deco` has three options currently, `validate`, `show`, and `run`.
 
@@ -33,7 +33,7 @@ Flags:
 Use "deco [command] --help" for more information about a command.
 ```
 
-### Deco Control File
+## Control File
 
 `deco` takes a JSON file, the control file, as input and defaults to `/var/run/secrets/deco.json`.  This allows it to work
 out of the box in docker swarm with swarm secrets.  The control file can be base64 encoded (standard encoding)
@@ -67,6 +67,79 @@ It's possible it could do more than just filter in the future.
 `deco` also supports passing custom headers for doing things like basic auth to the http(s) endpoint
 
 `deco show http://127.0.0.1:8888/v1/deco.json -H 'Authorization=Basic YWRtaW46cGFzc3dvcmQ='`
+
+### Control File Modifiers
+
+The `deco` control file has basic support value modifiers.  Instead of a string value, the value can be a JSON object referencing the `type` of modification and the `value` to be modified.  The `type` will be the same as the filters in the template described in the [Templates Section](##Templates).  Using modifiers will modify the value **before** the template is processed.  Using template functions will modify the values during template processing.
+
+```JSON
+{
+    "filters": {
+        "path/to/file1": {
+            "decryptThis": {
+              "type": "decrypt",
+              "value": "wengoiwengoiwengoiwegnoewing"
+            },
+        },
+        "path/to/file2": {
+            "base64decodethis": {
+              "type": "b64dec",
+              "value": "IMKvXF8o44OEKV8vwq8="
+            }
+        }
+    }
+}
+```
+
+## Templates
+
+Templates are the file paths referenced as the key for the `filters` object in the control file.  They should exist in place as templates before deco is run.  They use [standard Go template expansion](https://pkg.go.dev/text/template).
+
+Deco also supports a few custom functions in the template file:
+
+|         |                         |
+| ------- | ----------------------- |
+| b64enc  | base64 encode the value |
+| b64dec  | base64 decode the value |
+| decrypt | decrypt the value       |
+
+These can be used by piping the value through the functions.  ie.
+
+```golang
+{{ .foobarVariableToEncode | b64enc }}
+{{ .foobarVariableToDecode | b64dec }}
+{{ .foobarVariableToDecrypt | decrypt }}
+```
+
+## Encryption
+
+Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  The key can be passed to deco on the command line using the `--key` flag or by setting the `DECO_ENCRYPTION_KEY` environment variable.  During the `validate`, `show` and `run` steps, we recommend providing the key to the environment at runtime through a secrets manager.
+
+The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
+
+The `encryption` subcommand provides management facilities to generate new encryption keys, decrypt values and encrypt values.
+
+```text
+Manage encryption mechanisms for deco values.
+
+Usage:
+  deco encryption [command]
+
+Available Commands:
+  decrypt     Decrypt a value
+  encrypt     Encrypt a value
+  genkey      Generate a new encryption key
+
+Flags:
+  -h, --help   help for encryption
+
+Global Flags:
+      --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
+  -d, --dir string      Base directory for filtered files/templates
+      --key string      256bit encryption key
+
+Use "deco encryption [command] --help" for more information about a command.
+```
 
 ## Examples
 
@@ -124,56 +197,6 @@ else
   echo "ERROR: SSMPATH variable not set!"
   exit 1
 fi
-```
-
-## Templates
-
-Templates are the file paths referenced as the key for the `filters` object in the control file.  They should exist in place as templates before deco is run.  They use [standard Go template expansion](https://pkg.go.dev/text/template).
-
-Deco also supports a few custom functions in the template file:
-
-|         |                         |
-| ------- | ----------------------- |
-| b64enc  | base64 encode the value |
-| b64dec  | base64 decode the value |
-| decrypt | decrypt the value       |
-
-These can be used by piping the value through the functions.  ie.
-
-```golang
-{{ .foobarVariableToEncode | b64enc }}
-{{ .foobarVariableToDecode | b64dec }}
-{{ .foobarVariableToDecrypt | decrypt }}
-```
-
-## Encryption
-
-Values are encrypted using symmetric authenticated encryption using 256-bit AES-GCM with a random nonce.  The key can be passed to deco on the command line using the `--key` flag or by setting the `DECO_ENCRYPTION_KEY` environment variable.  During the `validate`, `show` and `run` steps, we recommend providing the key to the environment at runtime through a secrets manager.
-
-The examples use the following key: `d11bff052877151ef88e68374a509f38b91ff756d43757e5827bb30ba2b11aec`.
-
-The `encryption` subcommand provides management facilities to generate new encryption keys, decrypt values and encrypt values.
-
-```text
-Manage encryption mechanisms for deco values.
-
-Usage:
-  deco encryption [command]
-
-Available Commands:
-  decrypt     Decrypt a value
-  encrypt     Encrypt a value
-  genkey      Generate a new encryption key
-
-Flags:
-  -h, --help   help for encryption
-
-Global Flags:
-      --config string   deco config file -- _not_ the control file (default is $HOME/.deco.yaml)
-  -d, --dir string      Base directory for filtered files/templates
-      --key string      256bit encryption key
-
-Use "deco encryption [command] --help" for more information about a command.
 ```
 
 ## Author

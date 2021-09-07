@@ -23,12 +23,59 @@ import (
 // Logger is a STDERR logger
 var Logger = log.New(os.Stderr, "", 0)
 
-type Filter map[string]string
-
 // Configuration is the overall data structure unmarshalled from JSON
 type Configuration struct {
-	Filters map[string]Filter
+	Filters Filters
 	BaseDir string
+}
+
+// Filters are a map of file names to key/value pairs
+type Filters map[string]Filter
+
+// Filter is a set of key value pair to be filtered for a file
+type Filter map[string]string
+
+type Modifier struct {
+	Type  string
+	Value string
+}
+
+func (f *Filter) UnmarshalJSON(b []byte) error {
+	var rawfilters map[string]json.RawMessage
+	if err := json.Unmarshal(b, &rawfilters); err != nil {
+		return err
+	}
+
+	filter := Filter{}
+	for k, v := range rawfilters {
+		var str string
+		if err := json.Unmarshal(v, &str); err == nil {
+			filter[k] = str
+			continue
+		}
+
+		var mod Modifier
+		if err := json.Unmarshal(v, &mod); err == nil {
+			switch mod.Type {
+			case "decrypt":
+				filter[k] = decrypt(mod.Value)
+			case "b64dec":
+				filter[k] = base64decode(mod.Value)
+			case "b64enc":
+				filter[k] = base64encode(mod.Value)
+			default:
+				return fmt.Errorf("unrecognized modifier type %s at key %s", mod.Type, k)
+			}
+
+			continue
+		}
+
+		return fmt.Errorf("failed to unmarshal value '%+v' for key '%s'", string(v), k)
+	}
+
+	*f = filter
+
+	return nil
 }
 
 // Get fetches the control from a location and returns a io.ReadCloser
@@ -100,11 +147,6 @@ func (c *Configuration) Read(location string, headers []string, encoded bool) er
 	}
 
 	return json.NewDecoder(r).Decode(c)
-}
-
-// Print displays the configuration object
-func (c *Configuration) Print() {
-	Logger.Printf("%+v", c)
 }
 
 // DoFilters filters the files listed in the Configuration object
