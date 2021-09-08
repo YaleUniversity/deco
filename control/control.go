@@ -35,6 +35,7 @@ type Filters map[string]Filter
 // Filter is a set of key value pair to be filtered for a file
 type Filter map[string]string
 
+// Modifier is the struct representing a value to be modified
 type Modifier struct {
 	Type  string
 	Value string
