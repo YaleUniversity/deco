@@ -207,7 +207,7 @@ E Camden Fisher <camden.fisher@yale.edu>
 
 The MIT License (MIT)
 
-Copyright (c) 2021 Yale University
+Copyright (c) 2022 Yale University
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
