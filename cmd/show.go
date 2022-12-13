@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/YaleUniversity/deco/control"
 	"github.com/spf13/cobra"
@@ -28,7 +29,7 @@ control file is specified, the default '/var/run/secrets/deco.json' is assumed.`
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		if err := c.Read(controlLocation, httpHeaders, encoded); err != nil {
+		if err := c.Read(controlLocation, httpHeaders, httpTimeout, encoded); err != nil {
 			Logger.Println("[ERROR] Unable to read control file.", err)
 			os.Exit(1)
 		}
@@ -47,5 +48,6 @@ control file is specified, the default '/var/run/secrets/deco.json' is assumed.`
 func init() {
 	showCmd.Flags().BoolVarP(&encoded, "encoded", "e", false, "Control file is base64 encoded")
 	showCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
+	showCmd.Flags().DurationVarP(&httpTimeout, "timeout", "T", 15*time.Second, "Set the HTTP request timeout")
 	RootCmd.AddCommand(showCmd)
 }
