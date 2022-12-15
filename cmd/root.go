@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -14,6 +15,7 @@ var (
 	cfgFile         string
 	baseDir         string
 	httpHeaders     []string
+	httpTimeout     time.Duration
 	encoded         bool
 	encryptionKey   string
 )

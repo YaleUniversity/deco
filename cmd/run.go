@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"os"
+	"time"
 
 	"github.com/YaleUniversity/deco/control"
 
@@ -27,7 +28,7 @@ control file is specified, the default '/var/run/secrets/deco.json' is assumed.`
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		var c control.Configuration
-		if err := c.Read(controlLocation, httpHeaders, encoded); err != nil {
+		if err := c.Read(controlLocation, httpHeaders, httpTimeout, encoded); err != nil {
 			Logger.Println("[ERROR] Unable to validate control file.", err)
 			os.Exit(1)
 		}
@@ -49,5 +50,6 @@ control file is specified, the default '/var/run/secrets/deco.json' is assumed.`
 func init() {
 	runCmd.Flags().BoolVarP(&encoded, "encoded", "e", false, "Control file is base64 encoded")
 	runCmd.Flags().StringArrayVarP(&httpHeaders, "header", "H", []string{}, "Pass a custom header to server")
+	runCmd.Flags().DurationVarP(&httpTimeout, "timeout", "T", 15*time.Second, "Set the HTTP request timeout")
 	RootCmd.AddCommand(runCmd)
 }

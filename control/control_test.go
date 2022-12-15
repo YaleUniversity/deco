@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/YaleUniversity/deco/control"
 )
@@ -52,7 +53,7 @@ func TestReadFile(t *testing.T) {
 
 		filename := testFile.Name()
 		var actual control.Configuration
-		if err := actual.Read(filename, []string{}, e); err != nil {
+		if err := actual.Read(filename, []string{}, 10*time.Second, e); err != nil {
 			t.Errorf("failed to read config: %s", err)
 		}
 
@@ -117,7 +118,7 @@ func TestReadURL(t *testing.T) {
 	defer ts.Close()
 
 	var actual control.Configuration
-	err := actual.Read(ts.URL, []string{"foo=bar", "biz=baz"}, false)
+	err := actual.Read(ts.URL, []string{"foo=bar", "biz=baz"}, 10*time.Second, false)
 	if err != nil {
 		t.Errorf("Expected to successfully read for test URL")
 	}

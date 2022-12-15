@@ -80,14 +80,14 @@ func (f *Filter) UnmarshalJSON(b []byte) error {
 }
 
 // Get fetches the control from a location and returns a io.ReadCloser
-func Get(location string, headers []string) (io.ReadCloser, error) {
+func Get(location string, headers []string, timeout time.Duration) (io.ReadCloser, error) {
 	u, err := url.ParseRequestURI(location)
 	if err == nil {
 		if u.Scheme == "http" || u.Scheme == "https" {
 			Logger.Println("[INFO] Fetching control from URL", location)
 
 			var client = &http.Client{
-				Timeout: time.Second * 10,
+				Timeout: timeout,
 			}
 
 			req, err := http.NewRequest(http.MethodGet, location, nil)
@@ -136,8 +136,8 @@ func Get(location string, headers []string) (io.ReadCloser, error) {
 }
 
 // Read reads in the configuration and returns the object
-func (c *Configuration) Read(location string, headers []string, encoded bool) error {
-	r, err := Get(location, headers)
+func (c *Configuration) Read(location string, headers []string, timeout time.Duration, encoded bool) error {
+	r, err := Get(location, headers, timeout)
 	if err != nil {
 		return err
 	}
