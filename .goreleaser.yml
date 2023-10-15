@@ -24,7 +24,7 @@ brews:
     name: deco
     description: DockerEvironmentCOntrol
     homepage: https://github.com/YaleUniversity/deco
-    tap:
+    repository:
       owner: yalespinup
       name: homebrew-tools
       token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
