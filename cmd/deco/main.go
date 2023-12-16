@@ -1,6 +1,6 @@
 package main
 
-import "github.com/YaleUniversity/deco/cmd"
+import "github.com/YaleUniversity/deco/cli"
 
 var (
 	version = "v0.0.0"
@@ -9,11 +9,11 @@ var (
 )
 
 func main() {
-	cmd.Version = &cmd.CmdVersion{
+	cli.Version = &cli.CmdVersion{
 		AppVersion: version,
 		BuildTime:  date,
 		GitCommit:  commit,
 	}
 
-	cmd.Execute()
+	cli.Execute()
 }
