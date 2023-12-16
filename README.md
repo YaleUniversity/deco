@@ -202,6 +202,7 @@ fi
 ## Author
 
 E Camden Fisher <camden.fisher@yale.edu>
+Brandon Tassone <brandon.tassone@yale.edu>
 
 ## License
 
