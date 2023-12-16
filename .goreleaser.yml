@@ -8,6 +8,7 @@ builds:
       - linux
       - windows
       - darwin
+    main: ./cmd/deco
 release:
   prerelease: auto
   name_template: "{{.ProjectName}}-v{{.Version}}"

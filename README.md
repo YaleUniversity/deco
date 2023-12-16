@@ -2,6 +2,9 @@
 
 `deco` is short for **D**ocker **E**nvironment **Co**ntrol
 
+---
+[![goreleaser](https://github.com/YaleUniversity/deco/actions/workflows/releaser.yml/badge.svg)](https://github.com/YaleUniversity/deco/actions/workflows/releaser.yml)
+[![tests](https://github.com/YaleUniversity/deco/actions/workflows/tests.yaml/badge.svg)](https://github.com/YaleUniversity/deco/actions/workflows/tests.yaml)
 ## Command Usage
 
 `deco` has three options currently, `validate`, `show`, and `run`.
@@ -202,6 +205,7 @@ fi
 ## Author
 
 E Camden Fisher <camden.fisher@yale.edu>
+Brandon Tassone <brandon.tassone@yale.edu>
 
 ## License
 

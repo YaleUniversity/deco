@@ -1,0 +1,29 @@
+name: tests
+on:
+  push:
+
+jobs:
+  tests-off:
+    name: ${{ matrix.os }} - Go v${{ matrix.go-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go-version:
+          - "1.21.x"
+        os:
+          - "ubuntu-latest"
+          - "macos-latest"
+          - "windows-latest"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Test
+        run: |
+          go mod tidy -v
+          go test -cover  ./...
