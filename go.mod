@@ -3,7 +3,7 @@ module github.com/YaleUniversity/deco
 go 1.21
 
 require (
-	github.com/aws/aws-sdk-go v1.49.4
+	github.com/aws/aws-sdk-go v1.50.10
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
 	golang.org/x/crypto v0.16.0
