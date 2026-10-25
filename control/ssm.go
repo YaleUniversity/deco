@@ -49,7 +49,7 @@ func (s *SSM) GetParameter(path string) (string, error) {
 	})
 
 	if err != nil {
-		Logger.Println("[Error] Failed to fetch SSM paramter", err)
+		Logger.Println("[Error] Failed to fetch SSM parameter", err)
 		return "", err
 	}
 

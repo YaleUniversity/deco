@@ -12,7 +12,7 @@ import (
 )
 
 // NewEncryptionKey generates a random 256-bit key for Encrypt() and
-// Decrypt(). It return an error if the source of randomness fails.
+// Decrypt(). It returns an error if the source of randomness fails.
 func NewEncryptionKey() (*[32]byte, error) {
 	key := [32]byte{}
 	if _, err := io.ReadFull(rand.Reader, key[:]); err != nil {

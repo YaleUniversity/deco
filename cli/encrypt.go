@@ -25,7 +25,7 @@ var encryptionCmd = &cobra.Command{
 var encryptionGenKey = &cobra.Command{
 	Use:   "genkey",
 	Short: "Generate a new encryption key",
-	Long:  `Generates a new random 256bit encrytion key.`,
+	Long:  `Generates a new random 256bit encryption key.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		return nil
 	},
@@ -44,7 +44,7 @@ var encryptionGenKey = &cobra.Command{
 var encryptValue = &cobra.Command{
 	Use:   "encrypt [value]",
 	Short: "Encrypt a value",
-	Long:  `Generates cyphertext of the passed value using the encryption key found in the environment or passed via flags.`,
+	Long:  `Generates ciphertext of the passed value using the encryption key found in the environment or passed via flags.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return fmt.Errorf("unexpected number of arguments: %d", len(args))
@@ -71,7 +71,7 @@ var encryptValue = &cobra.Command{
 var decryptValue = &cobra.Command{
 	Use:   "decrypt [cipher]",
 	Short: "Decrypt a value",
-	Long:  `Decryptes passed ciphertext using the encryption key found in the environment or passed via flags.`,
+	Long:  `Decrypts passed ciphertext using the encryption key found in the environment or passed via flags.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		return nil
 	},

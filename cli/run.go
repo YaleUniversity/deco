@@ -34,7 +34,7 @@ control file is specified, the default '/var/run/secrets/deco.json' is assumed.`
 		}
 
 		// conditional here allows baseDir to be set in the JSON file
-		// and not overriden with ""
+		// and not overridden with ""
 		if baseDir != "" {
 			c.BaseDir = baseDir
 		}
